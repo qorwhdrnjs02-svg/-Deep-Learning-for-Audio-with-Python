@@ -1,4 +1,10 @@
 import numpy as np
+# save activations and derivatives
+# implement backpropagation
+# implement gradient descent
+# implement train
+# train our net with some dummy dataset
+# make some prediction
 
 class MLP:
     def __init__(self, num_inputs=3, num_hidden=[3, 5], num_outputs=2):
@@ -22,7 +28,7 @@ class MLP:
         self.weights = []
         for i in range(len(layers)-1):
             #4개의 층에 대하여 3개의 통로 필요
-            w = np.random.rand(layers[i], layers[i+1])
+            w = np.random.randn(layers[i], layers[i+1])
             #numpy 라이브러리에서 메트릭스를 만드는 방식
             #즉 3번 반복하면서 각 레이어에 대해
             #첫번쨰는 3x3 행렬
