@@ -1,5 +1,6 @@
 import numpy as np
 # save activations and derivatives
+
 # implement backpropagation
 # implement gradient descent
 # implement train
@@ -36,15 +37,61 @@ class MLP:
             #세번쨰는 5x2 행렬을 만들라는 소리
             #다만 numpy 라이브러리에서 채워지는 랜덤한 숫자는 모두 0~1범위
             self.weights.append(w)
+            
+            #순전파 결과 값을 저장해두기 위해 activations 리스트를 만듬
+        activations = []
+        for i in range (len(layers)):
+            #4번 루프를 돌면서
+            a =np.zeros(layers[i])
+            #numpy 배열을 총 4번 만드는데
+            #list가 [3,3,5,2]니까
+            #a = np.zeros(0) = [0., 0., 0.]
+            #a = np.zeros(1) = [0., 0., 0.]
+            #a = np.zeros(2) = [0., 0., 0., 0., 0.]
+            #a = np.zeros(4) = [0., 0.]
+            #가 되는 것이고
+            activations.append(a)
+            #activations = [[0., 0., 0.], ... , [0., 0.]]
+            #가 되는 것임
+            self.activations = activations
+
+            #이제 activations를 이용해 derivatives 리스트를 만듬
+        derivative = []
+        for i in range (len(layers)-1):
+        # 4개의 레이어에 대해 3개의 통로가 있고 
+        #이 말은 3개의 미분식이 필요하다는거니까 -1을 해주는 것
+            d = np.zeros((layers[i], layers[i+1]))
+            #첫번쨰는 3x3 행렬
+            #두번째는 3x5 행렬
+            #세번쨰는 5x2 행렬을 만듬
+            #행렬을 만드는 방식이 가중치를 만들었던 방식과 동일한데
+            #이는 각 가중치에 대한 
+            #gradient descent를 적용/저장하기 위함임
+            derivative.append(d)
+        self.derivative = derivative
+
+
      
     def forward_propagate(self, inputs):
         #input 벡터를 받아서
         activations = inputs #임시로 저장한 다음에
+        self.activations[0] = inputs
 
-        for w in self.weights:
-            net_inputs = np.dot(activations, w) #루프 돌면서 w랑 행렬곱해소 net_input 뽑아내고
+        for i, w in enumerate (self.weights):
+            net_inputs = np.dot(activations, w) 
+            #루프 돌면서 w랑 행렬곱해소 net_input 뽑아내고
 
-            activations =self._sigmoid(net_inputs) #결과로 나온 net_input을 sigmoid 함수에 입력
+            activations =self._sigmoid(net_inputs) 
+            #결과로 나온 net_inputs을 sigmoid 함수에 입력
+            #여기서 나온 net_inputs는 당연히 행렬인데
+            #activations[0]은 1x3 행렬
+            # w = self.weights[0]는 3x3 행렬이니까 
+            # 1x3 행렬이 activations[1]에 저장이 되고
+            #다시 루프를 돌게 되는 것임
+            self.activations[i+1] = activations
+            #여기서 i+1을 하는 이유는 
+            #a_3 = sigmoid(h_3)인데
+            #h_3 = a_2*W_2 이기 떄문임
 
         return activations #activation 반환
     
