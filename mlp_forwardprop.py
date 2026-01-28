@@ -95,6 +95,17 @@ class MLP:
 
         return activations #activation 반환
     
+    def back_propagate(self, error):
+
+        for i in reversed(range(len(self.derivative))):
+        #행렬을 담고 있는 self.derivatd는 행렬을 총 3개 담은 list고
+        #이를 reversd로 돈다는 것은 인댁스를 2 ->1->0 으로 돈다는 의미
+
+        # dE/dW_i = (y - a_[1+i]) s'(h_[i+1]) a_i
+        # s'(h_[i+1]) = s(h_[i+1])(1-s(h_[i+1]))
+        # s(h_[i+1]) = a_[i+1] 
+            activations = self.activations[i+1]
+
     def _sigmoid(self, x):
         return 1 / (1 + np.exp(-x))
     
