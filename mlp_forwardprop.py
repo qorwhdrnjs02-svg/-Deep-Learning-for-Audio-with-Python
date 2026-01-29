@@ -104,7 +104,54 @@ class MLP:
         # dE/dW_i = (y - a_[1+i]) s'(h_[i+1]) a_i
         # s'(h_[i+1]) = s(h_[i+1])(1-s(h_[i+1]))
         # s(h_[i+1]) = a_[i+1] 
+        # 6.training a neural network 내용대로 dE/dW를
+        # 두 layer 사이의 오류 정도를 나타내는 delta_[i+1]과 
+        # 앞선 앞에서 출력한 데이터 a_i의 곱으로 나타낼 수 있다
+      
+
+
+            #여기서 착각하지 말아야 할 것이 activations가 행벡터고
+            # simoid_derivative와 error 역시 각각 행벡타이며
+            # *는 각 요소별로 곱하는 Hadamard product를 수행한다
+            # 그말인 즉슨 delta도 행벡터라는 뜻
+            # current_activations는 말할 것도 없이 행벡터이니
+            # current_activations를 transpose한 것과 
+            # 행벡터인 delta의 행렬 곲 np.dot은
+            # 그 값이 행렬로 나올 것이다 --> (ax1) x (1xb) = (axb)
             activations = self.activations[i+1]
+            # activations에 뒤의 데이터를 받고
+            delta = error * self._sigmoid_derivative(activations)
+            delta_reshaped = delta.reshape(delta.shape[0], -1).T 
+                        #--> shape[0]은 기존 list에 담긴 데이터의 개수를 나타내고
+                        #--> -1은 네가 알아서 반대편은 몇 차원인지 결정하라는 뜻
+                        # T는 transpose 
+             
+            # 그걸 델타로서 계산 delta = (error x sigmoid의 미분)
+            current_activations = self.activations[i]
+            # 앞선 데이터를 current_activations로 받고
+            current_activations_reshaped = current_activations.reshape(current_activations.shape[0], -1)
+            self.derivative[i] = np.dot(current_activations_reshaped, delta_reshaped)
+            # 앞선 데이터(a_i)와 델타(delta_[i+1])의 곱으로 미분을 계산한다
+            error = np.dot(delta, self.weights[i].T)
+            #최종적으로 enl
+            return error
+
+                ############### 예시 ################
+                # 1. 이전 층 데이터 (3개)
+                # current_activations = np.array([0.1, 0.2, 0.3])
+                # # reshape(3, -1) -> (3, 1)로 세웁니다.
+                # current_activations_reshaped = [[0.1], 
+                #                                 [0.2], 
+                #                                 [0.3]]
+
+                # # 2. 델타 (2개)
+                # delta = np.array([0.5, 0.8])
+                # # 위에서 분석한 대로 (1, 2)로 눕힙니다.
+                # delta_reshaped = [[0.5, 0.8]]
+
+                # # 3. np.dot(세로, 가로) 연산 수행
+                # # (3x1) dot (1x2) => (3x2)
+                # derivative = np.dot(current_activations_reshaped, delta_reshaped)
 
     def _sigmoid(self, x):
         return 1 / (1 + np.exp(-x))
