@@ -99,7 +99,10 @@
     * $\sigma'(a_2) = 0.68 \times (1 - 0.68) \approx 0.22$
     $$\delta_2 = error_2 \odot \sigma'(a_2) = 0.32 \times 0.22 = \mathbf{0.07}$$
 3.  **$Deriv_1$ 작성 (이전 층 출력 $a_1^T$와 델타 $\delta_2$의 내적):**
-    $$Deriv_1 = \begin{bmatrix} 0.6 \\ 0.7 \end{bmatrix} \cdot [0.07] = \mathbf{\begin{bmatrix} 0.042 \\ 0.049 \end{bmatrix}}$$
+$$
+Deriv_1 = \begin{bmatrix} 0.6 \\\\ 0.7 \end{bmatrix} \cdot [0.07] = \begin{bmatrix} 0.042 \\\\ 0.049 \end{bmatrix}
+$$
+
 
 #### **3. 역전파 (Backward) - 은닉층**
 1.  **$error_1$ 전달 (에러 릴레이):**
