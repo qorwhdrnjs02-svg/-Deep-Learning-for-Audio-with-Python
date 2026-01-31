@@ -37,20 +37,23 @@ class MLP:
             #세번쨰는 5x2 행렬을 만들라는 소리
             #다만 numpy 라이브러리에서 채워지는 랜덤한 숫자는 모두 0~1범위
             self.weights.append(w)
+            #이렇게 하면 weights라는 list에는 w라는 행렬이 채워진다는 뜻
             
+            #activations는 뉴런에 들어가는 값
             #순전파 결과 값을 저장해두기 위해 activations 리스트를 만듬
         activations = []
         for i in range (len(layers)):
             #4번 루프를 돌면서
-            a =np.zeros(layers[i])
-            #numpy 배열을 총 4번 만드는데
+            a =np.zeros(layers[i]) #이건 벡터 만드는거고
+            #numpy 벡터를 총 4번 만드는데
             #list가 [3,3,5,2]니까
-            #a = np.zeros(0) = [0., 0., 0.]
-            #a = np.zeros(1) = [0., 0., 0.]
-            #a = np.zeros(2) = [0., 0., 0., 0., 0.]
-            #a = np.zeros(4) = [0., 0.]
+            #a_0 = np.zeros(0) = [0., 0., 0.]
+            #a_1 = np.zeros(1) = [0., 0., 0.]
+            #a_2 = np.zeros(2) = [0., 0., 0., 0., 0.]
+            #a_3 = np.zeros(3) = [0., 0.]
             #가 되는 것이고
             activations.append(a)
+            #배열안에 벡터를 append 하니까
             #activations = [[0., 0., 0.], ... , [0., 0.]]
             #가 되는 것임
             self.activations = activations
@@ -59,7 +62,7 @@ class MLP:
         derivative = []
         for i in range (len(layers)-1):
         # 4개의 레이어에 대해 3개의 통로가 있고 
-        #이 말은 3개의 미분식이 필요하다는거니까 -1을 해주는 것
+        # derivateive는 weights는 수정하는 거니까 3개의 행렬이 들어가는 list를 만드는게 맞음
             d = np.zeros((layers[i], layers[i+1]))
             #첫번쨰는 3x3 행렬
             #두번째는 3x5 행렬
@@ -73,33 +76,42 @@ class MLP:
 
      
     def forward_propagate(self, inputs):
-        #input 벡터를 받아서
-        activations = inputs #임시로 저장한 다음에
+        #다음 뉴런으로 activations_0 를 전달하기 위해
+        #input에 임시로 저장하고 
+        activations = inputs 
+    
         self.activations[0] = inputs
 
+        # i와 w의 루프가 같이 돌아야 하고 selg.weigths라는 리스트에서 
+        # i 번쨰 w행렬을 하나씩 뺴옴 
         for i, w in enumerate (self.weights):
             net_inputs = np.dot(activations, w) 
-            #루프 돌면서 w랑 행렬곱해소 net_input 뽑아내고
+            #루프 돌면서 i반째 행렬 w_[i]랑 
+            # activations = input = self.activations[0]을
+            # 행렬곱 해서 net_input 뽑아내고
 
+            #해당 net_input을 sigmoid 함수에 넣어서 다음 activations_[i+1]을 
+            # 계산 및 저장
             activations =self._sigmoid(net_inputs) 
-            #결과로 나온 net_inputs을 sigmoid 함수에 입력
-            #여기서 나온 net_inputs는 당연히 행렬인데
-            #activations[0]은 1x3 행렬
-            # w = self.weights[0]는 3x3 행렬이니까 
-            # 1x3 행렬이 activations[1]에 저장이 되고
-            #다시 루프를 돌게 되는 것임
+            # activations[0]은 1x3 행렬
+            # w = self.weights[0]는 3x3 행렬이니까
             self.activations[i+1] = activations
-            #여기서 i+1을 하는 이유는 
-            #a_3 = sigmoid(h_3)인데
-            #h_3 = a_2*W_2 이기 떄문임
+            # 1x3 행렬이 activations[1]에 저장이 되고
+            # 다시 루프를 돌게 되는 것임
 
-        return activations #activation 반환
+        #루프가 모두 끝나고 나면 activations에는 사실상 
+        # 마지막 출력값인 output = self.activations[3]이 저장되고 
+        # 우리는 출력값을 반환하므로
+        return activations 
     
     def back_propagate(self, error):
 
         for i in reversed(range(len(self.derivative))):
         #행렬을 담고 있는 self.derivatd는 행렬을 총 3개 담은 list고
         #이를 reversd로 돈다는 것은 인댁스를 2 ->1->0 으로 돈다는 의미
+        #그리고 여기서 유념할 것은 항상 self.derivatve와
+        #self.weights 가 
+        #self.activations 보다 1만큼 길이가 짧다는 것.
 
         # dE/dW_i = (y - a_[1+i]) s'(h_[i+1]) a_i
         # s'(h_[i+1]) = s(h_[i+1])(1-s(h_[i+1]))
