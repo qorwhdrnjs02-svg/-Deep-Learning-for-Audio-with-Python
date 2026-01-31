@@ -105,7 +105,7 @@ class MLP:
         return activations 
     
     def back_propagate(self, error):
-
+        #여기서 인자로 받는 error는 출력값에 대한 목표값과의 error
         for i in reversed(range(len(self.derivative))):
         #행렬을 담고 있는 self.derivatd는 행렬을 총 3개 담은 list고
         #이를 reversd로 돈다는 것은 인댁스를 2 ->1->0 으로 돈다는 의미
@@ -131,8 +131,11 @@ class MLP:
             # 행벡터인 delta의 행렬 곲 np.dot은
             # 그 값이 행렬로 나올 것이다 --> (ax1) x (1xb) = (axb)
             activations = self.activations[i+1]
-            # activations에 뒤의 데이터를 받고
+            # output의 activations을 받고
+            # hadmard 곱 시행
+            # 여기서 error는 함수를 실행할 인자로 받는 error
             delta = error * self._sigmoid_derivative(activations)
+            #delta도 activations 벡터의 각 요소에 대해 연산 한 결과 이므로 벡터
             delta_reshaped = delta.reshape(delta.shape[0], -1).T 
                         #--> shape[0]은 기존 list에 담긴 데이터의 개수를 나타내고
                         #--> -1은 네가 알아서 반대편은 몇 차원인지 결정하라는 뜻
@@ -142,11 +145,14 @@ class MLP:
             current_activations = self.activations[i]
             # 앞선 데이터를 current_activations로 받고
             current_activations_reshaped = current_activations.reshape(current_activations.shape[0], -1)
+           
             self.derivative[i] = np.dot(current_activations_reshaped, delta_reshaped)
             # 앞선 데이터(a_i)와 델타(delta_[i+1])의 곱으로 미분을 계산한다
             error = np.dot(delta, self.weights[i].T)
-            #최종적으로 enl
-            return error
+        #이렇게 해서 최종 출력에 대한 error for문을 거쳐 error_0을 반환
+        #ex)output을 출력하는 W_2에 대한 보청을 위해  error_2를 인자로 함수를 실행하면
+        #for 문을 거쳐 W_0에 대한 보정을 위해 error_0을 반환한다는 이야기
+        return error
 
                 ############### 예시 ################
                 # 1. 이전 층 데이터 (3개)
@@ -164,7 +170,8 @@ class MLP:
                 # # 3. np.dot(세로, 가로) 연산 수행
                 # # (3x1) dot (1x2) => (3x2)
                 # derivative = np.dot(current_activations_reshaped, delta_reshaped)
-
+    
+    #이건 그냥 sigmoid 함수
     def _sigmoid(self, x):
         return 1 / (1 + np.exp(-x))
     
