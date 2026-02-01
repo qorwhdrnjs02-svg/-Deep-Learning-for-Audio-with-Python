@@ -121,7 +121,7 @@ $$
 Deriv_0 = \mathbf{\begin{bmatrix} 0.0084 & 0.00735 \\\\ 0.0168 & 0.0147 \end{bmatrix}}
 $$
 
-## 03-2. Training & Learning Implementation
+## 05. Training & Learning Implementation
 - **Goal:** 데이터 세트를 반복 학습시켜 가중치를 실제로 수정함.
 - **Process:**
   1. **데이터 공급:** `zip`을 이용해 `inputs`와 `targets`를 한 쌍의 세트로 묶어 꺼냄.
@@ -133,7 +133,7 @@ $$
 - **에러 누적 및 평균화:** - 각 루프마다 발생하는 `mse` 오차를 `sum_error`에 쌓음.
   - 한 epoch 루프가 끝날 때, 누적된 값을 **사용한 데이터 세트의 수(`len(inputs)`)**로 나눠야 데이터당 평균 오차를 확인할 수 있음.
 
-## 04. Final Simulation Result & Test
+## 06. Final Simulation Result & Test
 - **Task:** 덧셈 연산 학습 ($x_1 + x_2$)
 - **Dataset:** `random()/2`를 사용해 합이 1을 넘지 않는 1,000개의 데이터 생성.
 - **Training:** 50 에포크 동안 총 50,000번의 학습 수행.
