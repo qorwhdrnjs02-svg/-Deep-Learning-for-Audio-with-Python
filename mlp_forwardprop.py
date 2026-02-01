@@ -1,6 +1,7 @@
 import numpy as np
-# save activations and derivatives
+from random import random
 
+# save activations and derivatives
 # implement backpropagation
 # implement gradient descent
 # implement train
@@ -104,8 +105,10 @@ class MLP:
         # 우리는 출력값을 반환하므로
         return activations 
     
-    def back_propagate(self, error):
+    def back_propagate(self, error, verbose = False):
         #여기서 인자로 받는 error는 출력값에 대한 목표값과의 error
+        #verbose는 나중에 가중치 수정을 위해 가중치를 확인 하기 위한
+        #if 문에 대해서 필요한 인자 기능적 역할은 없음
         for i in reversed(range(len(self.derivative))):
         #행렬을 담고 있는 self.derivatd는 행렬을 총 3개 담은 list고
         #이를 reversd로 돈다는 것은 인댁스를 2 ->1->0 으로 돈다는 의미
@@ -149,6 +152,10 @@ class MLP:
             self.derivative[i] = np.dot(current_activations_reshaped, delta_reshaped)
             # 앞선 데이터(a_i)와 델타(delta_[i+1])의 곱으로 미분을 계산한다
             error = np.dot(delta, self.weights[i].T)
+
+            if verbose:
+                print("Derivatives for W{}: \n {}".format(i, self.derivative[i]))
+        
         #이렇게 해서 최종 출력에 대한 error for문을 거쳐 error_0을 반환
         #ex)output을 출력하는 W_2에 대한 보청을 위해  error_2를 인자로 함수를 실행하면
         #for 문을 거쳐 W_0에 대한 보정을 위해 error_0을 반환한다는 이야기
@@ -171,21 +178,98 @@ class MLP:
                 # # (3x1) dot (1x2) => (3x2)
                 # derivative = np.dot(current_activations_reshaped, delta_reshaped)
     
+    #가중치 업데이트를 위한 derivative 와 기존 가중치 연산
+    #이걸 gradient_descent라고 함
+    def gradient_descent(self, learning_rate):
+        for i in range(len(self.weights)):
+            weights = self.weights[i]
+            # print("Original W{} {}".format(i, weights))
+
+            derivates = self.derivative[i]
+
+            # 둘이 same demension이라 가능한 연산
+            weights += derivates*learning_rate
+            # print("Updated W{} {}".format(i, weights))
+
+    def train(self, inputs, targets, epochs, learning_rate):
+        # epoch는 가중치를 수정하는 주기 epoch번 만큼 학습시키겠다는 뜻
+        for i in range(epochs):
+            # 각 epoch 떄마다 sum_error가 얼마나 되는지 보기 위해 루프 안에 넣고
+            sum_error = 0
+            for input, target in  zip(inputs, targets):
+                # 해당 for문이 의문스러울텐데 zip은 하나로 묶는 거고 
+                # enumerate는 아다시피 하나씩 꺼내는 역할이다
+                # 즉, inputs = ([0,1, 0.2], [0.3, 0.4]) 이고
+                # outputs = ([0.3], [0.7])이면
+                # zip한 결과는 ([0.1, 0.2], [0.3]), ([0.3, 0.4], [0.7])인거고
+                # 거기서 enumerate 하니까 각각의 set를 꺼내서 아래 함수에
+                # 인자로서 쓰겠다는 말임
+                #forward propagation
+                output = mlp.forward_propagate(input)
+
+                # calculate the error
+                error = target - output
+
+                #back propagation
+                self.back_propagate(error, verbose=False)
+
+                #apply gradient descent
+                self.gradient_descent(learning_rate)
+
+                sum_error += self.mse(target, output)
+                
+            #report error
+            #이 떄 i는 epoch의 순서고,
+            # 루프가 끝나면 우리가 main 함수에서 사용한 dataset의 수만큼
+            # sum_error에 값이 쌓여 있을텐데
+            # 그걸 우리가 사용한 데이터 set의 수 즉
+            # 우리가 사용한 inputs의 수로 나눠줘야 하기 때문에
+            # sum_error 나누기 len(inputs)를 하는 것.
+            print("Error: {} at epoch {}".format(sum_error/len(inputs), i))
+
+    def mse(self, target, output):
+        #mse는 mean squred error 즉 평균 제곱 오차
+        return np.average((target-output)**2)
+
     #이건 그냥 sigmoid 함수
     def _sigmoid(self, x):
         return 1 / (1 + np.exp(-x))
     
+    #이건 그냥 sigmoid 미분
+    def _sigmoid_derivative(self, x):
+        return x * (1.0-x)
+
 if __name__ == "__main__":
+    
+    #create a dataset to train a network for the sum operation
+    # 모델을 학습시키기 위한 더하기 데이터 세트
+    # 각 요소가 0~1 사이의 값인 임의의 2차원 데이터를 1000개 뽑아냄 
+    inputs = np.array([[random() / 2 for _ in range(2)] for _ in range(1000)])
+    #ex) array([0.1, 0.2], [0.3, 0.4])를 만들어내고
+
+    #1000개의 벡터가 list를 이루고 있는 inputs에서 임의로 하나 뽑아서 두 요소를 더함
+    # 이걸 i만큼 하니까 총 1000번씩 더하기를 하는 것
+    # 그러면 우리는 저 밑에 train에서 50번 학습하기로 했으니까
+    # 총 50000번의 더하기를 하는 것
+    targets = np.array([[i[0]+i[1]] for i in inputs])  
+    #ex) array([0.3], [0.7])
+      
     #create a MLP
-    mlp = MLP()
-    #create some Inputs
-    inputs = np.random.rand(mlp.num_inputs)
-    #numpy에서 N차원 벡터를 생성하는 법
+    mlp = MLP(2, [5], 1)
 
-    #perform forward prop
-    outputs = mlp.forward_propagate(inputs)
+    #train our mlp
+    mlp.train(inputs, targets, 50, 0.1)
 
-    #print the results
-    print("The network input is: {}".format(inputs))
-    print("The network output is: {}".format(outputs))
+    #create dummy data
+    #우리가 저 위에서 학습한 모델을 실제 값을 넣어보면
+    input = np.array([0.3, 0.1])
+    target = np.array([0.4])
+
+    output = mlp.forward_propagate(input)
+    print()
+    print()
+    print("Our network believes that {} + {} is equal to {}".format(input[0], input[1], output[0]))
+    # 4에 가까운 값이 잘 나옴
+   
+
     
