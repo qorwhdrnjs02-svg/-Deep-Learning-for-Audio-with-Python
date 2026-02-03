@@ -27,20 +27,35 @@ def generate_dataset(num_samples, test_size):
 if __name__ == "__main__":
     # 우리가 gen 함수에 인자로 준 샘플 개수와, 데스트 사이즈 비율에 따라
     # 각 변수들이 정의되고
-    x_train, x_test, y_train, y_test = generate_dataset(10, 0.2)
+    x_train, x_test, y_train, y_test = generate_dataset(5000, 0.3)
     # 10을 0.2의 비율로 테스트 샘플을 나눴으니 2개의 테스트가 나올 것
     # print("x_test: \n {}".format(x_test))
     # print("y_test: \n {}".format(y_test))
 
 #build model: 2 -> 5 -> 1 의 모델을 구축한다면
 model = tf.keras.Sequential([
-    tf.keras.layers.Dense(5, input_dim = 2, activations="sigmoid")
-    tf.keras.layers.Dense(1, activations="sigmoid")
+    tf.keras.layers.Dense(5, input_dim = 2, activation="sigmoid"),
+    tf.keras.layers.Dense(1, activation="sigmoid")
 ])
+
 #compile model
 optimiser = tf.keras.optimizers.SGD(learning_rate=0.1)
-model.compile(optimizer="", loss="MSE")
+model.compile(optimizer=optimiser, loss="MSE")
+
 #train model
 model.fit(x_train, y_train, epochs=100)
+
 #evaluate model
+#당연한 이야기자만 loss 값이 train model과 많은 차이가 나면
+# 제대로 학습이 진행되지 않았다는 거니까 문제가 있음 
+print("Model evaluation:")
+model.evaluate(x_test,y_test, verbose=1)
+
 #make predictions
+data = np.array([[0.1, 0.2], [0.2, 0.2]])
+prediction = model.predict(data)
+
+print("Some predcition: ")
+for d, p in zip(data, prediction):
+    print("{} + {} = {}".format(d[0], d[1], p[0]))
+
