@@ -137,3 +137,38 @@ $$
 - **Task:** 덧셈 연산 학습 ($x_1 + x_2$)
 - **Dataset:** `random()/2`를 사용해 합이 1을 넘지 않는 1,000개의 데이터 생성.
 - **Training:** 50 에포크 동안 총 50,000번의 학습 수행.
+
+## 07. TensorFlow 활용 모델 구현 및 비교 (MLP_TF)
+
+기존에 직접 파이썬으로 구현했던 신경망 로직을 **TensorFlow/Keras** 라이브러리를 사용하여 현대적인 방식으로 재구성하였습니다.
+
+### 1️⃣ 모델 구성 및 비교 (2-5-1 MLP)
+| 구분 | 밑바닥부터 짜기 (Raw Python) | TensorFlow Keras 사용 |
+|:---:|:---|:---|
+| **모델 정의** | `MLP` 클래스 생성, `Layer` 리스트 관리 | `tf.keras.Sequential`로 층을 차례로 쌓음 |
+| **순전파** | `_sigmoid` 함수 및 행렬 곱 직접 구현 | `layers.Dense(activation="sigmoid")` 자동 처리 |
+| **입력 설정** | 입력 벡터 크기에 맞춰 가중치 행렬 초기화 | `input_dim=2`를 통해 첫 번째 층의 입력 정의 |
+
+### 2️⃣ 핵심 함수 및 파라미터 요약
+
+* **Optimizer (최적화):** `tf.keras.optimizers.SGD(learning_rate=0.1)`
+    * **의미:** 우리가 직접 미분($Gradient$)하여 가중치를 업데이트했던 과정을 자동화함.
+    * **Learning Rate (0.1):** 가중치 업데이트 시의 **'보폭'**. 수동 구현 시 $W = W - \eta \cdot \nabla L$ 공식의 **$\eta$** 값과 동일함.
+* **Loss Function (손실 함수):** `loss="MSE"`
+    * 오류값의 정도를 계산하는 **평균 제곱 오차(Mean Squared Error)**법 활용.
+* **Compile:** * 설계한 모델 구조와 최적화 방법(SGD), 손실 함수(MSE)를 하나로 묶어 컴퓨터가 계산 가능한 상태로 변환하는 선언 단계.
+
+### 3️⃣ 학습 및 평가 프로세스 (Training & Evaluation)
+* **Training (`model.fit`):**
+    * **Epochs:** 전체 학습 데이터셋을 한 번 다 훑는 단위.
+    * **Task:** 5,000개의 데이터를 7:3으로 분할하여 3,500개의 데이터를 100회 반복 학습 (총 350,000번의 연산 수행).
+* **Evaluation (`model.evaluate`):**
+    * 학습에 쓰이지 않은 1,500개의 테스트 데이터로 실제 성능 측정.
+    * **Verbose=1:** 학습/평가 상황을 진행 막대기(Progress Bar)로 실시간 생중계하는 옵션.
+* **Validation Logic:** Train Loss와 Test Loss의 차이가 크지 않아야 모델이 암기가 아닌 **'덧셈의 원리'**를 깨우쳤다고 판단함 (과적합 방지).
+
+### 4️⃣ Final Simulation Result & Test
+- **Task:** 덧셈 연산 학습 ($x_1 + x_2$)
+- **Dataset:** `random()/2`를 사용해 합이 1을 넘지 않는 5,000개의 데이터 생성.
+- **Training:** 100 에포크 동안 총 350,000번의 학습 수행.
+- **Result:** 한 번도 보지 못한 `[[0.1, 0.2], [0.2, 0.2]]`와 같은 데이터를 주었을 때 정답에 근사한 값을 출력함.
