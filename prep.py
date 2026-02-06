@@ -38,10 +38,25 @@ signal, sr = librosa.load(file, sr=22050) #sr * T -> 22050 * 30
 # plt.show()
 
 # fft -> spectrum
+# [FFT: Fast Fourier Transform]
+# 1. DFT의 원리: 연속적인 아날로그 신호를 sr(샘플링 레이트) 주기로 채취하여
+#    (원래 analog 함수와 impulse train의 곱) 
+#    이산 신호(Discrete Signal)로 만들고, 이를 푸리에 변환하는 과정.
+# 2. FFT의 효율성: 데이터 개수가 N일 때, 일반 DFT의 연산량 O(N^2)을 
+#    O(N log N)으로 획기적으로 줄여 실시간 분석을 가능하게 함.
+# 3. 데이터 구조: 입력인 signal 배열이 N개의 샘플(sr * T)을 가지므로, 
+#    출력인 fft 배열 역시 동일하게 N개의 복소수 원소를 가짐.
 fft = np.fft.fft(signal)
 
 # 앞서 배웠듯이 magnitude는 각 주파수가 얼만큼 전체 소리에 기여하는지 나타냄
+# FT의 결과가 복소수(크기와 방향을 가짐)인데, 
+# 우리가 필요한 것은 주파수에 대응하는 에너지의 크기이니
+# 절대값(absolute) 값이 필요하고
+# (역시 magnitude는 fft라는 배열의 각 요소의 절대값만 계산하였으므로
+# fft와 데이터 개수가 같음)
 magnitude = np.abs(fft)
+
+#
 frequency = np.linspace(0, sr, len(magnitude))
 
 left_frequency = frequency[:int(len(frequency)/2)]
