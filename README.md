@@ -195,7 +195,11 @@ $$
 - **Insight:** 전체적인 소리의 크기(Energy)와 타격감은 확인할 수 있으나, 어떤 주파수(음높이) 성분이 포함되어 있는지는 파악하기 어려움.
 
 #### **📊 Waveform Result & Analysis**
-![Waveform](./images/262509 blues_1 waveform.png)
+![Waveform](./images/2262509_blues_1_waveform.png)
+
+
+
+
 
 ### 08.4 Short-Time Fourier Transform (STFT & Spectrogram)
 - **Goal:** FFT의 한계(시간 정보 소실)를 극복하기 위해 신호를 짧은 구간으로 나누어 '시간에 따른 주파수 변화'를 분석.
@@ -207,7 +211,7 @@ $$
 
 | 1. Linear Spectrogram (Before Log) | 2. Log Spectrogram (After Log/dB) |
 | :---: | :---: |
-| ![Linear Spectrogram](./images/262509 blues_1 waveform.png) | ![Log Spectrogram](./images/262509 blues_1 spectogram) |
+| ![Linear Spectrogram](./images/262509_blues_1_linear_spectogram.png) | ![Log Spectrogram](./images/262509_blues_1_spectogram.png) |
 | **물리적 진폭(Amplitude) 기반** | **데시벨(dB) 스케일 기반** |
 
 #### **🔎 결과 비교 및 분석 (Analysis)**
@@ -227,7 +231,7 @@ $$
 - **Concept:** - **Mel Scale:** 인간의 귀가 저음역대 변화에 더 민감하다는 특성을 반영하여 주파수 축을 재조정.
   - **Feature Compression:** Spectrogram의 방대한 정보를 13개의 추상화된 계수로 압축하여 딥러닝 모델이 '공부하기 좋은 요약본'을 제공.
 
-![MFCC](./images/262509 blues_1  MFCCs.png)
+![MFCC](./images/262509_blues_1_MFCCs.png)
 
 #### **📊 MFCC Result & Analysis**
 - **Feature Extraction:** 약 66만 개의 샘플 데이터를 단 13개의 특징 열로 압축함에도 불구하고, 음원의 고유한 정체성은 유지됨.
