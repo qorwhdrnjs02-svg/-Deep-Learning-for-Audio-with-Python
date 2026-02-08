@@ -195,7 +195,7 @@ $$
 - **Insight:** 전체적인 소리의 크기(Energy)와 타격감은 확인할 수 있으나, 어떤 주파수(음높이) 성분이 포함되어 있는지는 파악하기 어려움.
 
 #### **📊 Waveform Result & Analysis**
-![Waveform](image/2262509_blues_1_waveform.png)
+![Waveform](./image/2262509_blues_1_waveform.png)
 
 ### 08.3 Frequency Analysis (FFT & Spectrum)
 - **Goal:** 시간 영역(Time Domain)의 파형을 주파수 영역(Frequency Domain)으로 변환하여 소리에 섞인 '음높이' 성분들을 분석.
