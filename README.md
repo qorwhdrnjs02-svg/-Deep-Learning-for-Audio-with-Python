@@ -180,8 +180,6 @@ $$
   2. **STFT:** 시간의 흐름을 반영하기 위해 신호를 짧게 잘라 주파수 분석.
   3. **MFCC:** 인간의 청각 특성을 반영하여 소리의 '음색(Timbre)' 특징 추출.
 
-### 🎵 [Source Audio Sample 직접 듣기](./music/blues.00000.wav)
-
 ---
 
 ### 08.1 Digital Audio Foundation (ADC & SR)
@@ -196,7 +194,30 @@ $$
   - **Data Size:** 30초 음원 기준 $22050 \times 30 = 661,500$ 개의 데이터 포인트로 구성.
 - **Insight:** 전체적인 소리의 크기(Energy)와 타격감은 확인할 수 있으나, 어떤 주파수(음높이) 성분이 포함되어 있는지는 파악하기 어려움.
 
-
-
 #### **📊 Waveform Result & Analysis**
-![Waveform](./images/blues_1_waveform.png)
+![Waveform](./images/262509 blues_1 waveform.png)
+
+## 08.4 Short-Time Fourier Transform (STFT & Spectrogram)
+- **Goal:** FFT의 한계(시간 정보 소실)를 극복하기 위해 신호를 짧은 구간으로 나누어 '시간에 따른 주파수 변화'를 분석.
+- **The Logic (지운님의 통찰):**
+  - **데생의 음영:** 보폭(`hop_length`)을 윈도우 크기보다 작게 설정하여 겹치게 스캔함으로써, 연속적인 소리의 변화를 부드러운 음영처럼 그려냄.
+  - **3차원 정보:** 가로축(시간), 세로축(주파수), 색상(에너지 세기)으로 소리를 시각화.
+
+### 📊 Spectrogram Transformation: Linear vs. Log Scale
+
+| 1. Linear Spectrogram (Before Log) | 2. Log Spectrogram (After Log/dB) |
+| :---: | :---: |
+| ![Linear Spectrogram](./images/262509 blues_1 waveform.png) | ![Log Spectrogram](./images/262509 blues_1 spectogram) |
+| **물리적 진폭(Amplitude) 기반** | **데시벨(dB) 스케일 기반** |
+
+#### **🔎 결과 비교 및 분석 (Analysis)**
+
+1. **Linear Spectrogram (로그 취하기 전)**
+   - **특징:** 소리의 물리적인 에너지가 아주 큰 부분(피크 지점)만 밝게 표시됨.
+   - **한계:** 인간의 귀는 아주 작은 소리부터 큰 소리까지 광범위하게 인지하지만, 선형 그래프에서는 에너지가 조금만 낮아도 모두 검은색으로 묻혀버려 세밀한 음색 패턴이나 배음 구조를 파악하기 어려움.
+
+2. **Log Spectrogram (로그 취한 후/dB 변환)**
+   - **특징:** `librosa.amplitude_to_db`를 통해 작은 에너지 변화도 시각적으로 드러나게 변환.
+   - **장점:** - **인간의 인지 반영:** 인간은 소리의 크기를 로그(Log) 단위로 인지하므로, 실제 우리가 귀로 듣는 느낌과 시각적 정보가 일치하게 됨.
+     - **디테일 부각:** 이전에는 보이지 않던 저음역대의 미세한 움직임과 고음역대의 배음(Harmonics) 구조가 명확하게 드러남.
+     - **학습 효율:** 데이터의 범위가 압축되어 딥러닝 모델이 소리의 특징을 더 안정적으로 학습할 수 있는 상태가 됨.
