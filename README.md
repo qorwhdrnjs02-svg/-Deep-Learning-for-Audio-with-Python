@@ -172,3 +172,35 @@ $$
 - **Dataset:** `random()/2`를 사용해 합이 1을 넘지 않는 5,000개의 데이터 생성.
 - **Training:** 100 에포크 동안 총 350,000번의 학습 수행.
 - **Result:** 한 번도 보지 못한 `[[0.1, 0.2], [0.2, 0.2]]`와 같은 데이터를 주었을 때 정답에 근사한 값을 출력함.
+
+## 08. Audio Data Preprocessing (STFT & MFCC)
+- **Goal:** 시계열 데이터인 오디오를 AI 모델이 학습 가능한 '이미지' 형태의 특징량(Feature)으로 변환.
+- **Process:**
+  1. **Load:** 아날로그 신호를 디지털 샘플 배열(`signal`)로 변환.
+  2. **STFT:** 시간의 흐름을 반영하기 위해 신호를 짧게 잘라 주파수 분석.
+  3. **MFCC:** 인간의 청각 특성을 반영하여 소리의 '음색(Timbre)' 특징 추출.
+
+### 🎵 Source Audio Sample
+<audio controls>
+  <source src="./blues.00000.wav" type="audio/wav">
+  Your browser does not support the audio element.
+</audio>
+
+---
+
+### 08.1 Digital Audio Foundation (ADC & SR)
+- **Concept:** 아날로그 신호를 초당 $sr$(Sampling Rate)만큼 샘플링하여 양자화(Quantize)하는 과정.
+- **Nyquist Theorem:** 특정 주파수를 복원하려면 해당 주파수보다 최소 2배 이상의 속도로 샘플링해야 함. 인간의 가청 주파수(약 20kHz)를 고려하여 디지털 음원은 보통 44.1kHz를 사용하나, 딥러닝에서는 계산 효율을 위해 `sr=22050`을 주로 사용함.
+- **Parameters:** `sr=22050` (1초에 22,050개의 점을 찍어 소리를 기록).
+
+### 08.2 Waveform Analysis
+- **Definition:** 시간축($x$)에 따른 진폭($y$, Amplitude)의 변화를 나타내는 Raw 데이터.
+- **Characteristics:**
+  - `signal`: 각 샘플의 진폭값(-1 ~ 1)을 담은 1차원 `NumPy` 배열.
+  - **Data Size:** 30초 음원 기준 $22050 \times 30 = 661,500$ 개의 데이터 포인트로 구성.
+- **Insight:** 전체적인 소리의 크기(Energy)와 타격감은 확인할 수 있으나, 어떤 주파수(음높이) 성분이 포함되어 있는지는 파악하기 어려움.
+
+
+
+#### **📊 Waveform Result & Analysis**
+![Waveform](./images/blues_1_waveform.png)
