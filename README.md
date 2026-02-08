@@ -182,7 +182,7 @@ $$
 
 ### 🎵 Source Audio Sample
 <audio controls>
-  <source src="./blues.00000.wav" type="audio/wav">
+  <source src="./music/blues.00000.wav" type="audio/wav">
   Your browser does not support the audio element.
 </audio>
 
