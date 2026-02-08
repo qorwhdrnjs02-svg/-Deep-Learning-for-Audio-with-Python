@@ -197,8 +197,21 @@ $$
 #### **📊 Waveform Result & Analysis**
 ![Waveform](./images/2262509_blues_1_waveform.png)
 
+### 08.3 Frequency Analysis (FFT & Spectrum)
+- **Goal:** 시간 영역(Time Domain)의 파형을 주파수 영역(Frequency Domain)으로 변환하여 소리에 섞인 '음높이' 성분들을 분석.
+- **Process:**
+  1. **np.fft.fft(signal):** 이산 푸리에 변환을 수행하여 복소수 배열 생성.
+  2. **Magnitude:** 복소수에 `np.abs()`를 취해 각 주파수 성분의 실제 에너지 세기를 도출.
+  3. **Frequency Mapping:** `np.linspace(0, sr, len(magnitude))`를 통해 인덱스를 실제 주파수(Hz) 단위로 대응.
+  4. **Nyquist Symmetry:** 실수 신호의 대칭성에 따라 의미 있는 양의 주파수 영역($0 \sim 11,025Hz$)만 추출.
 
+![FFT_Spectrum](./images/262509_blues_1_FFT.png)
 
+#### **📊 FFT Result & Analysis**
+- **Magnitude Peaks:** 그래프 좌측(0~2000Hz)에 거대한 에너지 피크들이 밀집해 있음. 이는 블루스 음악의 리듬과 무게감을 담당하는 베이스 기타, 드럼 킥의 저음역대 성분이 매우 강렬함을 시사함.
+- **Frequency Distribution:** 4000Hz 이후로 갈수록 에너지가 급격히 감소함. 이는 음악의 주된 정보(악기 선율, 보컬)가 주로 저음과 중음역대에 집중되어 있음을 보여줌.
+- **The "Missing Link" (FFT의 한계):** 주파수 성분의 비율은 명확히 알 수 있으나, 이 ' Magnitude'들이 **어느 시점(When)**에 튀어나왔는지는 알 수 없음. (30초 전체를 평균 낸 결과이기 때문)
+- **Insight:** 이 시간 정보의 상실을 해결하기 위해, 신호를 아주 짧게 쪼개어 분석하는 **STFT(Spectrogram)** 과정이 필연적으로 뒤따라야 함.
 
 
 ### 08.4 Short-Time Fourier Transform (STFT & Spectrogram)
