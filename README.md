@@ -1,13 +1,13 @@
 # -Deep-Learning-for-Audio-with-Python
 
 ## 01. Artificial Neuron Implementation
-- **Goal:** Understand the basic building block of neural networks.
+- **목표l:** 신경학습망의 기초 구성 이해.
 - **Process:**
   1. Receive multiple inputs.
   2. Apply weights to each input.
   3. Calculate the weighted sum.
   4. Use Sigmoid activation function to squeeze the result between 0 and 1.
-- Weighted Sum: $h = \sum w_i x_i$
+- 가중치 함: $h = \sum w_i x_i$
 - Sigmoid: $y = \frac{1}{1 + e^{-h}}$
 - **Tools:** Python `math` module.
 
@@ -20,7 +20,7 @@
   4. 반복문을 통해 각 층에 Sigmoid 활성화 함수 적용 및 최종 결과 도출.
 - **Tools:** Python `NumPy`.
 
-## 02-1. Structure Simulation
+## 02.1 Structure Simulation
 
 본 프로젝트의 동작 원리를 이해하기 위해 2(입력)-2(은닉)-1(출력) 레이어 구조를 기준으로 한 연산 과정을 정리합니다.
 

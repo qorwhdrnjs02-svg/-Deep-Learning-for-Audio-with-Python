@@ -2,7 +2,7 @@ import librosa, librosa.display
 import matplotlib.pyplot as plt
 import numpy as np
 
-file = "blues.00000.wav"
+file = "music/blues.00000.wav"
 
 #waveform
 # 우리가 지난번에 배웠듯이 sr (단위가 Hz)만큼 초당 n가의 점을 시간 축 위에 찍으면
@@ -125,9 +125,9 @@ stft = librosa.core.stft(signal, hop_length=hop_length, n_fft=n_fft)
 
 
 # 역시나 해당 stft 배열의 값은 허수이기 때문에 절대값을 취하고
-spectrogram = np.abs(stft)
+spectogram = np.abs(stft)
 # 절대값에 대해 log를 취해서 amplitude를 우리가 일반적으로 사용하는 dB로 변환
-log_spectogram = librosa.amplitude_to_db(spectrogram)
+log_spectogram = librosa.amplitude_to_db(spectogram)
 # 스펙토그램을 그림
 # librosa.display.specshow(log_spectogram, sr=sr, hop_length=hop_length)
 # plt.xlabel("Time")
