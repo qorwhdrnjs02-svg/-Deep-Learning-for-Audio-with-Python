@@ -197,7 +197,7 @@ $$
 #### **📊 Waveform Result & Analysis**
 ![Waveform](./images/262509 blues_1 waveform.png)
 
-## 08.4 Short-Time Fourier Transform (STFT & Spectrogram)
+### 08.4 Short-Time Fourier Transform (STFT & Spectrogram)
 - **Goal:** FFT의 한계(시간 정보 소실)를 극복하기 위해 신호를 짧은 구간으로 나누어 '시간에 따른 주파수 변화'를 분석.
 - **The Logic (지운님의 통찰):**
   - **데생의 음영:** 보폭(`hop_length`)을 윈도우 크기보다 작게 설정하여 겹치게 스캔함으로써, 연속적인 소리의 변화를 부드러운 음영처럼 그려냄.
@@ -221,3 +221,16 @@ $$
    - **장점:** - **인간의 인지 반영:** 인간은 소리의 크기를 로그(Log) 단위로 인지하므로, 실제 우리가 귀로 듣는 느낌과 시각적 정보가 일치하게 됨.
      - **디테일 부각:** 이전에는 보이지 않던 저음역대의 미세한 움직임과 고음역대의 배음(Harmonics) 구조가 명확하게 드러남.
      - **학습 효율:** 데이터의 범위가 압축되어 딥러닝 모델이 소리의 특징을 더 안정적으로 학습할 수 있는 상태가 됨.
+
+### 08.5 Mel-Frequency Cepstral Coefficients (MFCCs)
+- **Goal:** 주파수 전체가 아닌, 소리의 '음색(Timbre)'을 결정짓는 핵심 지문 13개를 추출.
+- **Concept:** - **Mel Scale:** 인간의 귀가 저음역대 변화에 더 민감하다는 특성을 반영하여 주파수 축을 재조정.
+  - **Feature Compression:** Spectrogram의 방대한 정보를 13개의 추상화된 계수로 압축하여 딥러닝 모델이 '공부하기 좋은 요약본'을 제공.
+
+![MFCC](./images/262509 blues_1  MFCCs.png)
+
+#### **📊 MFCC Result & Analysis**
+- **Feature Extraction:** 약 66만 개의 샘플 데이터를 단 13개의 특징 열로 압축함에도 불구하고, 음원의 고유한 정체성은 유지됨.
+- **Interpretation:** - 맨 아래쪽 붉은색 띠(0번 계수)는 음원의 **전체적인 에너지 흐름**을 나타냄.
+  - 상단의 1~12번 계수들은 **소리의 질감 패턴**을 담고 있으며, 가로로 이어지는 색상의 변화가 곧 이 블루스 음악의 '음색적 지문'임.
+- **Final Insight:** AI 모델은 이제 이 13가지 성분의 시계열 변화를 학습하여, 새로운 소리가 들렸을 때 그것이 '블루스'인지 '재즈'인지 판별할 수 있는 능력을 갖추게 됨.
