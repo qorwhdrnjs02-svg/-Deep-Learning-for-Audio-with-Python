@@ -180,11 +180,7 @@ $$
   2. **STFT:** 시간의 흐름을 반영하기 위해 신호를 짧게 잘라 주파수 분석.
   3. **MFCC:** 인간의 청각 특성을 반영하여 소리의 '음색(Timbre)' 특징 추출.
 
-### 🎵 Source Audio Sample
-<audio controls>
-  <source src="./music/blues.00000.wav" type="audio/wav">
-  Your browser does not support the audio element.
-</audio>
+### 🎵 [Source Audio Sample 직접 듣기](./music/blues.00000.wav)
 
 ---
 
