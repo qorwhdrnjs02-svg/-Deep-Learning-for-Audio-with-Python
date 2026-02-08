@@ -129,10 +129,69 @@ spectrogram = np.abs(stft)
 # 절대값에 대해 log를 취해서 amplitude를 우리가 일반적으로 사용하는 dB로 변환
 log_spectogram = librosa.amplitude_to_db(spectrogram)
 # 스펙토그램을 그림
-librosa.display.specshow(log_spectogram, sr=sr, hop_length=hop_length)
+# librosa.display.specshow(log_spectogram, sr=sr, hop_length=hop_length)
+# plt.xlabel("Time")
+# plt.ylabel("Frequency")
+# plt.colorbar()
+# plt.show()
+
+# MFCCs
+
+#여기서 'y'는 y축을 의미하는 것이 아니라 신호처리에서 관습적으로 사용하는 종속변수로서
+#신호 데이터 자체 를 뜻함
+
+#기본적으로 spectogram을 그리는 방식과 유사하지만 mfcc에 대한 이해가 필요함
+# mfcc는 기본적으로 사람이 느끼기에 해당 source가 어떤 음색을 보이는지 이해하게
+# 도와주는 방법임.
+
+# 특히 n_mfcc = 13에 대하여 이해할 필요가 있는데
+# 이는 음원을 13개의 '특성'으로 나누어 시간에 대하여 해당 특성이 어떤 경향을 보이는지
+# 알려줄 수 있도록 하는 변수라고 행각하면됨
+# 즉 해당 그래프의 세로축은 주파수대역이 아니라 주파수 대역을 일정한 알고리즘을 따라
+# 분류하고, 재조합 한다음에
+
+#----------------------------
+# [MFCC 1~13번 계수의 역할: 소리의 '지문'을 그리는 13개의 붓터치]
+# 각 계수는 주파수 대역이 아니라, 소리의 '형태(Envelope)'를 결정하는 수학적 성분임.
+
+# 1번 (MFCC 0) - 전체 에너지 (DC 성분)
+# : 소리의 총 합산 크기(볼륨)를 결정. 
+# : [비유] 얼굴의 '전체 크기'와 밝기
+
+# 2번 (MFCC 1) - 에너지의 기울기 (Spectral Slope)
+# : 저음이 강한지 고음이 강한지 결정. 
+# : [비유] 얼굴의 '상하 비율' (긴 얼굴 vs 짧은 얼굴)
+
+# 3번 (MFCC 2) - 중심부의 굴곡
+# : 특정 대역(주로 중음역)의 에너지가 솟았는지 눌렸는지 나타냄.
+# : [비유] 이목구비의 '굵직한 위치'
+
+# 4~13번 - 세밀한 음색 패턴
+# : 소리의 겉모양(Envelope)이 얼마나 복잡하게 요동치는지 나타냄.
+# : [비유] 눈매, 콧날의 각도, 입술 모양 등 '세부 디테일'
+
+# ※ 참고: 14번 이후는 소리의 종류를 구분하는 데 불필요한 '노이즈'로 간주하여 보통 제외함.
+#----------------------------
+
+# 이렇게 분류하는 것임 
+
+mfccs = librosa.feature.mfcc(y=signal, sr=sr, n_fft=n_fft, hop_length=hop_length, n_mfcc=13)
+librosa.display.specshow(mfccs, sr=sr, hop_length=hop_length)
 plt.xlabel("Time")
-plt.ylabel("Frequency")
+plt.ylabel("MFCC")
 plt.colorbar()
 plt.show()
 
-# MFCCs
+# 더 정리된 언어로 다시 설명하면
+
+# [MFCC의 본질: 주파수 대역이 아닌 '소리의 성질' 추출]
+# - 13개의 칸은 연속적인 주파수 구간(Hz)을 의미하는 것이 아님.
+# - 각 칸은 소리의 '전체적인 형태'를 묘사하는 서로 다른 기준들임.
+# - 예: 1번은 크기, 2번은 고/저 쏠림 정도, 3번은 특정 구간의 굴곡 등...
+# - 이렇게 '추상화'된 데이터이기 때문에 딥러닝 모델이 음색의 차이를 더 쉽게 학습할 수 있음.
+
+# [MFCC 13개 계수의 의미]
+# - 특정 주파수 대역을 13개로 나눈 것이 아님 (그건 Mel-Spectrogram의 역할).
+# - MFCC는 그 주파수 분포를 다시 수학적으로 압축하여 소리의 '전체적인 질감/모양'을 뽑아낸 것.
+# - 즉, 각 칸은 "소리의 형태를 결정하는 13가지 핵심 성분"을 의미하며, 
+# - 이를 통해 모델은 주파수 전체를 보지 않고도 '음색'의 특징을 빠르게 파악함.
