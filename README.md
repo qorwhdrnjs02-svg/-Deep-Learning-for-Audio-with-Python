@@ -293,6 +293,7 @@ $$
 실제 데이터가 딕셔너리에 누적되는 과정을 시각화하면 다음과 같음.
 
 ''' python
+
 data = {
     # 1. mapping: 2번 인덱스가 "hiphop"임을 명시
     "mapping": ["classical", "blues", "hiphop"],
