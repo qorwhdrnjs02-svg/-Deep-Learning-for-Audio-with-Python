@@ -2,7 +2,7 @@ import librosa, librosa.display
 import matplotlib.pyplot as plt
 import numpy as np
 
-file = "music/blues.00000.wav"
+file = "music/blues/blues.00000.wav"
 
 #waveform
 # 우리가 지난번에 배웠듯이 sr (단위가 Hz)만큼 초당 n가의 점을 시간 축 위에 찍으면

@@ -13,4 +13,7 @@ __pycache__/
 
 # 체크포인트 및 설정 파일
 .ipynb_checkpoints/
-.vscode/
+.vscode/data.json
+music/
+data.json
+music/
