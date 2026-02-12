@@ -3,6 +3,7 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 import tensorflow as tf
 import tensorflow.keras as keras
+import matplotlib.pyplot as plt
 
 
 DATASET_PATH = "data.json"
@@ -37,6 +38,28 @@ def load_data(dataset_path):
     targets = np.array(data["labels"])
     
     return inputs, targets
+
+def plot_history(history):
+
+    flg, axs = plt.subplots(2)
+
+    #create accuracy subplot
+    axs[0].plot(history.history["accuracy"], label="train accuracy")
+    axs[0].plot(history.history["val_accuracy"], label="test accuracy")
+    axs[0].set_ylabel("Accuracy")
+    axs[0].set_xlabel("Epoch")
+    axs[0].legend(loc="lower right")
+    axs[0].set_title("Accuracy eval")
+
+    #create error subplot
+    axs[1].plot(history.history["loss"], label="train error")
+    axs[1].plot(history.history["val_loss"], label="test error")
+    axs[1].set_ylabel("Error")  
+    axs[1].set_xlabel("Epoch")
+    axs[1].legend(loc="upper right")
+    axs[1].set_title("Error eval")
+
+    plt.show()
 
 if __name__ == "__main__":
     #load data
@@ -127,7 +150,8 @@ if __name__ == "__main__":
     model.summary()
 
     #train network
-    model.fit(inputs_train, 
+
+    history = model.fit(inputs_train, 
               targets_train,
               validation_data=(inputs_test, targets_test),
               epochs=50,
@@ -153,3 +177,4 @@ if __name__ == "__main__":
 # 현상: Training Accuracy(95%) 대비 Validation Accuracy(59%)가 현저히 낮으며, Validation Loss가 상승하는 전형적인 과적합 발생.
 # 원인: 학습 데이터셋의 규모(100개 샘플)에 비해 모델의 파라미터 수가 과도하게 많아, 데이터의 일반적인 패턴이 아닌 개별 샘플의 노이즈를 암기함.
 # 해결 방향: Dropout, 가중치 규제(Regularization), 데이터 증강 등을 통해 모델의 복잡도를 제어하고 일반화 성능을 높이는 공정이 필요함.
+    plot_history(history)
