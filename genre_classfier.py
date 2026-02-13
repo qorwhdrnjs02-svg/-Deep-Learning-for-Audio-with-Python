@@ -177,4 +177,6 @@ if __name__ == "__main__":
 # 현상: Training Accuracy(95%) 대비 Validation Accuracy(59%)가 현저히 낮으며, Validation Loss가 상승하는 전형적인 과적합 발생.
 # 원인: 학습 데이터셋의 규모(100개 샘플)에 비해 모델의 파라미터 수가 과도하게 많아, 데이터의 일반적인 패턴이 아닌 개별 샘플의 노이즈를 암기함.
 # 해결 방향: Dropout, 가중치 규제(Regularization), 데이터 증강 등을 통해 모델의 복잡도를 제어하고 일반화 성능을 높이는 공정이 필요함.
+    
+    #overfitting 분석을 돕기 위한 시각화 함수에 history 전달
     plot_history(history)
