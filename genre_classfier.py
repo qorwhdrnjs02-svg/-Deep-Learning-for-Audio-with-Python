@@ -41,17 +41,23 @@ def load_data(dataset_path):
 
 def plot_history(history):
 
-    flg, axs = plt.subplots(2)
+    #두개의 그래프를 세로로 그릴 예정
+    #figure와 axes
+    fig, axs = plt.subplots(2)
 
     #create accuracy subplot
+    #첫번째 그래프는 accuracy
+    #train accuracy와 test accuracy를 epoch에 따라 그릴 것임
     axs[0].plot(history.history["accuracy"], label="train accuracy")
     axs[0].plot(history.history["val_accuracy"], label="test accuracy")
     axs[0].set_ylabel("Accuracy")
     axs[0].set_xlabel("Epoch")
-    axs[0].legend(loc="lower right")
+    axs[0].legend(loc="lower right") #범례 위치를 오른쪽 아래로 설정
     axs[0].set_title("Accuracy eval")
 
     #create error subplot
+    #두번째 그래프는 error
+    #train error와 test error를 epoch에 따라 그릴 것임
     axs[1].plot(history.history["loss"], label="train error")
     axs[1].plot(history.history["val_loss"], label="test error")
     axs[1].set_ylabel("Error")  
