@@ -111,13 +111,23 @@ if __name__ == "__main__":
         #0 초과일 때는 입력 값을 그대로 출력하는 함수로서
         #기존 sigmoid 함수에서 발생할 수 있었던
         # 기울기 소실 문제(vanishing gradient problem)를 완화하는 데 도움을 줌
-        keras.layers.Dense(512, activation='relu'),
+        #과적합 방지 위해 L2 규제 추가, L2 규제는 모델의 가중치가 너무 커지는 것을 방지하여 과적합을 줄이는 데 도움을 줌
+        keras.layers.Dense(512, activation='relu', kernel_regularizer=keras.regularizers.l2(0.001)),
+        keras.layers.Dropout(0.3), #과적합 방지 위해 dropout 추가
+
         #2nd hidden layer
         #가중치 행렬은 (512,256) 형태가 될 것임
-        keras.layers.Dense(256, activation='relu'),
+        #과적합 방지 위해 L2 규제 추가, L2 규제는 모델의 가중치가 너무 커지는 것을 방지하여 과적합을 줄이는 데 도움을 줌
+        keras.layers.Dense(256, activation='relu', kernel_regularizer=keras.regularizers.l2(0.001)),
+        keras.layers.Dropout(0.3), #과적합 방지 위해 dropout 추가
+        
         #3rd hidden layer
         #가중치 행렬은 (256,64) 형태가 될 것임
-        keras.layers.Dense(64, activation='relu'),
+        #과적합 방지 위해 L2 규제 추가, L2 규제는 모델의 가중치가 너무 커지는 것을 방지하여 과적합을 줄이는 데 도움을 줌
+        keras.layers.Dense(64, activation='relu', kernel_regularizer=keras.regularizers.l2(0.001)),
+        keras.layers.Dropout(0.3), #과적합 방지 위해 dropout 추가
+        
+        
 
         #output layer
         #장르를 하나로 특정하려면 출력층이 하나여야 하는거 아닌가 싶지만
