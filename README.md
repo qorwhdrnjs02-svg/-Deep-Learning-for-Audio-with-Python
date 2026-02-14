@@ -414,7 +414,23 @@ Model: "sequential"
 
 ## 11. Overfitting Prevention: Dropout & Regularization
 
-학습 결과 나타난 전형적인 과적합(Overfitting) 문제를 해결하기 위해 모델 설계에 두 가지 핵심 규제 기법을 도입하였습니다.
+학습 결과 나타난 전형적인 과적합(Overfitting) 문제를 해결하기 위해 모델 설계에 두 가지 핵심 규제 기법을 도입하였습니다. 
+
+### 🟢 개선된 모델 구조 (Updated Model Architecture)
+기존 모델에 `Dropout`과 `L2 Regularizer`를 적용한 최종 신경망 구조입니다.
+
+| Layer (type) | Output Shape | Param # |
+|:--- |:--- |:--- |
+| **flatten (Flatten)** | (None, 1690) | 0 |
+| **dense (Dense)** | (None, 512) | 865,792 |
+| **dropout (Dropout)** | (None, 512) | 0 |
+| **dense_1 (Dense)** | (None, 256) | 131,328 |
+| **dropout_1 (Dropout)** | (None, 256) | 0 |
+| **dense_2 (Dense)** | (None, 64) | 16,448 |
+| **dropout_2 (Dropout)** | (None, 64) | 0 |
+| **dense_3 (Dense)** | (None, 10) | 650 |
+
+
 
 ### 11.1 L2 가중치 규제 (Weight Decay)
 * **적용**: `kernel_regularizer=keras.regularizers.l2(0.001)`
@@ -436,7 +452,6 @@ Model: "sequential"
 
 ![overfitting_solved](./image/260212_overfitting_solved.png)
 
-
 ### 11.4 기타 과적합 방지 전략 (Alternative Strategies)
 
 이번 프로젝트에서 주력으로 사용한 기법 외에도, 딥러닝 성능 최적화를 위해 고려할 수 있는 보조 전략들은 다음과 같음.
@@ -444,9 +459,9 @@ Model: "sequential"
 1.  **모델 단순화 (Simpler Architecture)**
     * **방법**: 은닉층의 개수나 각 층의 뉴런(Node) 수를 줄임.
     * **이유**: 모델의 학습 용량(Capacity) 자체를 줄여, 복잡한 노이즈까지 학습할 여유를 주지 않는 원초적인 방법.
+
 2.  **데이터 증강 (Data Augmentation)**
     * **방법**: 기존 음원 데이터를 속도 조절(Time Stretching), 음높이 변경(Pitch Shifting), 소음 추가(Noise Injection) 등으로 변형하여 데이터 양을 억제적으로 늘림.
-    * **이유**: 학습할 데이터가 많아질수록 모델은 개별 샘플을 외우기보다 공통적인 패턴을 찾는 데 집중.
+
 3.  **조기 종료 (Early Stopping)**
     * **방법**: 검증 오차(Validation Loss)가 더 이상 줄어들지 않고 상승하기 시작하는 시점에서 학습을 강제로 중단.
-    * **이유**: 학습이 과도하게 진행되어 일반화 능력을 상실하기 직전 최적의 타이밍을 잡아줌.
