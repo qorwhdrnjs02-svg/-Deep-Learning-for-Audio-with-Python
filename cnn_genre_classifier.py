@@ -98,6 +98,7 @@ def build_model(input_shape):
 
     #flatten output and feed into dense layer
     #최종적으로 데이터를 1차원으로 펼쳐서 완전 연결층(Dense layer)에 입력
+    #해당 부분은 15강 pdf 45페이지 참조
     model.add(tf.keras.layers.Flatten())
     model.add(tf.keras.layers.Dense(64, activation="relu"))
     model.add(tf.keras.layers.Dropout(0.3))
@@ -107,6 +108,40 @@ def build_model(input_shape):
 
     return model
 
+def predict(model, X, Y):
+    # 1. 차원 확장 (Batch Dimension 추가)
+    # -------------------------------------------------------------------------
+    # 현재 X의 형태: (130, 13, 1) -> (시간, 주파수, 채널)인 '데이터 1개'
+    # 하지만 model.predict()는 기본적으로 '여러 데이터의 묶음(Batch)'을 입력으로 기대함.
+    # 따라서 맨 앞에 '1개짜리 묶음'이라는 차원을 추가해줘야 함.
+    
+    # np.newaxis를 맨 앞에 둠으로써: (1, 130, 13, 1) 형태가 됨.
+    # 해석: "130x13 크기의 1채널 데이터가 1개 들어있는 박스"
+    X = X[np.newaxis, ...] 
+
+    # 2. 예측 수행 (Inference)
+    # -------------------------------------------------------------------------
+    # prediction 결과 형태: (1, 10) -> (샘플 수, 클래스 개수)
+    # 예시: [[0.01, 0.05, 0.80, 0.02, ...]] 
+    # -> 10개의 숫자(확률)가 들어있는 리스트가 반환됨. (Softmax 결과)
+    prediction = model.predict(X)
+
+    # 3. 결과 해석 (Argmax)
+    # -------------------------------------------------------------------------
+    # np.argmax: 확률 배열에서 '가장 큰 값'을 가진 위치(Index)를 찾아줌.
+    # axis=1: 가로 방향(클래스 나열 방향)으로 훑어서 최댓값을 찾으라는 뜻.
+    # 예시: 2번 인덱스의 확률이 0.80으로 가장 높다면 -> 결과는 2
+    X = X[np.newaxis, ...] 
+
+    #preciction -> ([0.1, 0.2 ... ]) 형태의 2D array
+    prediction =model.predict(X)
+
+    #extract index with max value
+    predicted_index = np.argmax(prediction, axis=1) 
+   #예측된 확률 분포에서 가장 높은 확률을 가진 클래스의 인덱스를 추출 
+   # ex) [0.1, 0.2, 0.05, 0.65] -> predicted_index = 3
+    print(f"Expected index: {Y}, Predicted index: {predicted_index}")
+   
 if __name__ == "__main__":
     # create train, validation and test sets
     X_train, X_validation, X_test, Y_train, Y_validation, Y_test = prepare_datasets(0.25, 0.2)
@@ -121,9 +156,26 @@ if __name__ == "__main__":
     input_shape=(X_train.shape[1], X_train.shape[2], X_train.shape[3])
     model = build_model(input_shape=input_shape)
     #compile the network
-
+    #모델이 학습할 때 사용할 손실 함수, 최적화 알고리즘, 평가 지표 등을 설정하는 과정
+    #자세한 내용은 genre_classifier.py 참조
+    optimizer = tf.keras.optimizers.Adam(learning_rate=0.0001)
+    model.compile(optimizer=optimizer,
+                  loss="sparse_categorical_crossentropy",
+                  metrics=["accuracy"])
+    
     #train the CNN network
+    model.fit(X_train, Y_train, validation_data=(X_validation, Y_validation), epochs=30, batch_size=32)
 
     #evaluate the CNN on the test set
+    test_error, test_accuracy = model.evaluate(X_test, Y_test, verbose=2)
+    print(f"Test error: {test_error}, Test accuracy: {test_accuracy}")
 
     #make predictions on a sample
+    # 4. 개별 샘플 테스트
+    # -------------------------------------------------------------------------
+    # 전체 테스트셋(X_test) 중에서 100번째 데이터를 하나 콕 집어서 꺼냄.
+    # X_test[100]의 형태는 (130, 13, 1)임. (Batch 차원이 빠진 상태)
+    X = X_test[100]
+    Y = Y_test[100]
+
+    predict(model, X, Y)
