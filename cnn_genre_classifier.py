@@ -131,11 +131,6 @@ def predict(model, X, Y):
     # np.argmax: 확률 배열에서 '가장 큰 값'을 가진 위치(Index)를 찾아줌.
     # axis=1: 가로 방향(클래스 나열 방향)으로 훑어서 최댓값을 찾으라는 뜻.
     # 예시: 2번 인덱스의 확률이 0.80으로 가장 높다면 -> 결과는 2
-    X = X[np.newaxis, ...] 
-
-    #preciction -> ([0.1, 0.2 ... ]) 형태의 2D array
-    prediction =model.predict(X)
-
     #extract index with max value
     predicted_index = np.argmax(prediction, axis=1) 
    #예측된 확률 분포에서 가장 높은 확률을 가진 클래스의 인덱스를 추출 

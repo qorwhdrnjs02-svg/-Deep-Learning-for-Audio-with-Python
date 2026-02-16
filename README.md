@@ -465,3 +465,67 @@ Model: "sequential"
 
 3.  **조기 종료 (Early Stopping)**
     * **방법**: 검증 오차(Validation Loss)가 더 이상 줄어들지 않고 상승하기 시작하는 시점에서 학습을 강제로 중단.
+
+## 12. CNN Implementation for Genre Classification
+
+MLP(다층 퍼셉트론)의 한계를 넘어, 이미지 처리 분야에서 혁명적인 성과를 낸 **CNN(Convolutional Neural Network)**을 오디오 데이터(MFCC)에 적용함.
+
+### 12.1 Why CNN for Audio? (MLP vs CNN)
+* **MLP의 한계:** 2차원인 MFCC 데이터(시간 × 주파수)를 1차원으로 쭉 펴서(`Flatten`) 입력받기 때문에, 소리의 **시간적 흐름(Time)**과 **주파수 간의 관계(Structure)** 정보가 손실됨.
+* **CNN의 접근:** MFCC 스펙트로그램을 마치 **'흑백 이미지'**처럼 취급함.
+    * **Local Invariance:** 이미지에서 사물의 위치가 바뀌어도 인식하는 것처럼, 소리의 높낮이나 시간대가 조금 달라져도 고유한 특징(Feature)을 잡아낼 수 있음.
+    * **Parameter Sharing:** 작은 필터(Kernel)를 반복 사용하므로, MLP 대비 훨씬 적은 파라미터로 효율적인 학습이 가능함.
+
+### 12.2 Data Preprocessing for CNN (3D Input)
+CNN은 기본적으로 이미지를 처리하도록 설계되었기에, 2차원 배열인 MFCC 데이터에 **'채널(Channel)'** 차원을 추가하여 3차원 구조로 변환해야 함.
+
+* **Original MFCC:** `(130, 13)` -> [시간, 주파수]
+* **CNN Input:** `(130, 13, 1)` -> [시간, 주파수, **채널(1)**]
+    * `np.newaxis`를 사용하여 깊이(Depth)가 1인 3차원 텐서로 확장함. (마치 RGB 채널이 없는 흑백 사진과 동일한 구조)
+
+### 12.3 Model Architecture & Key Components
+3개의 Convolution Layer 블록과 Classifier(Dense)로 구성된 모델 구조임.
+
+#### 1) Convolution Block (Feature Extraction)
+* **Conv2D:** `(3, 3)` 크기의 작은 필터 32개가 데이터를 훑으며 수직/수평선의 특징을 감지함. 층이 깊어질수록 더 복잡하고 추상적인 소리의 패턴을 학습함.
+* **MaxPooling2D:** `(2, 2)` 크기로 데이터를 압축함. 중요한 특징은 남기고 불필요한 정보는 버려 연산량을 줄이고 과적합을 방지함.
+* **Batch Normalization (핵심):**
+    * **문제 (Internal Covariate Shift):** 학습 도중 이전 층의 가중치가 변하면, 다음 층으로 넘어가는 데이터의 분포가 널뛰기를 하여 학습이 불안정해짐.
+    * **해결:** 각 층의 출력값을 강제로 **평균 0, 분산 1**로 정렬(Normalize)해 줌.
+    * **효과:** 학습 속도가 비약적으로 빨라지고, 초기 설정에 덜 민감해지며 안정적인 학습이 가능해짐.
+
+#### 2) Classification Head
+* **Flatten:** 3차원 특징맵(Feature Map)을 1차원 벡터로 펼침.
+* **Dense (64 nodes):** 추출된 특징들을 조합하여 최종 판단을 내림.
+* **Dropout (0.3):** 뉴런의 30%를 꺼서 과적합을 억제.
+* **Output (Softmax):** 10개 장르에 대한 최종 확률 출력.
+
+### 12.4 Prediction Logic & Dimension Expansion
+학습된 모델을 사용하여 개별 샘플을 예측(`predict`)할 때, 데이터의 차원을 맞추는 것이 매우 중요함. 모델은 항상 **'배치(Batch)'** 단위의 입력을 기대하기 때문.
+
+```python
+def predict(model, X, Y):
+    # 1. 차원 확장 (Batch Dimension 추가)
+    # -------------------------------------------------------------------------
+    # 현재 X: (130, 13, 1) -> "데이터 1개"
+    # 모델 기대 입력: (Batch, Time, Freq, Channel) -> "데이터 묶음"
+    # 해결: np.newaxis를 맨 앞에 추가하여 "1개짜리 묶음"으로 포장함.
+    # 변환: (130, 13, 1) -> (1, 130, 13, 1)
+    X = X[np.newaxis, ...] 
+
+    # 2. 예측 (Inference)
+    # 결과: [[0.1, 0.05, 0.8, ...]] (각 클래스별 확률 리스트)
+    prediction = model.predict(X)
+
+    # 3. 결과 해석
+    # 가장 높은 확률을 가진 인덱스 추출 (Argmax)
+    predicted_index = np.argmax(prediction, axis=1)
+    
+    # 4. 정답 비교
+    print(f"Expected index: {Y}, Predicted index: {predicted_index}")
+```
+### 12.5 Final Result Analysis
+* **Test Accuracy:** 약 **72.5%** 달성.
+* **Performance:** 10개 장르 중 무작위 선택 확률(10%) 대비 **약 7배 이상** 높은 정확도를 보임.
+* **Training vs Test Gap:** Train Accuracy(74.8%)와 Test Accuracy(72.5%)의 격차가 약 **2.3%p**로 매우 적음. 이는 **과적합(Overfitting) 없이 모델이 아주 건강하게 학습되었음**을 의미함.
+* **Conclusion:** 베이스라인 모델로서 훌륭한 성능을 확보함. 향후 Data Augmentation(데이터 증강)이나 모델의 깊이(Depth)를 확장하여 80% 이상의 정확도에 도전할 계획임.
