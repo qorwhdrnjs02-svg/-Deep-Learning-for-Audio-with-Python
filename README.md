@@ -552,6 +552,7 @@ def predict(model, X, Y):
 | **Output** | Classifier | `(10)` | Softmax (10개 장르 확률) |
 
 ### 13.3 Key Concept: Sequence-to-Sequence Connection
+* **Why True?** 2층 LSTM도 시계열 데이터(Sequence)를 입력으로 받아야 작동함. 따라서 1층에서 섣불리 요약(Vector화)하지 않고, **매 순간의 판단 흐름 전체**를 2층으로 넘겨주어 더 정교한 심층 학습(Deep Learning)을 유도함.
 ```python
 # 1층 LSTM
 model.add(tf.keras.layers.LSTM(64, input_shape=input_shape, return_sequences=True))
