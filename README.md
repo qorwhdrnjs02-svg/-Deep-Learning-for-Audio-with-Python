@@ -561,15 +561,25 @@ model.add(tf.keras.layers.LSTM(64, input_shape=input_shape, return_sequences=Tru
 ![RNN Result](./image/260217_RNN.png)
 
 #### **📊 결과 분석 (Result Analysis)**
-* **Accuracy:** Test Accuracy는 약 **68% ~ 70%** 수준에서 수렴함.
+* **Accuracy:** Test Accuracy는 약 **60% ~ 62%** 수준에서 수렴함.
 * **Graph Trend:** * **Accuracy:** 완만하게 상승하지만, CNN 모델 대비 상승 폭이 둔함.
     * **Error:** 약 15 Epoch 이후부터 Test Error가 더 이상 줄어들지 않고 정체되거나 소폭 상승하는 모습을 보임. (초기 단계의 Overfitting 조짐)
 
 #### **🤔 왜 CNN보다 성능이 낮을까? (Critical Thinking)**
-이전 챕터의 **CNN 모델(약 72%)**보다 **RNN 모델(약 65%)**의 성능이 낮게 측정됨. 이는 **'음악 장르 분류'**라는 태스크의 고유한 특성 때문으로 해석됨.
+이전 챕터의 **CNN 모델(약 72%)**보다 **RNN 모델(약 60%)**의 성능이 낮게 측정됨. 이는 **'음악 장르 분류'**라는 태스크의 고유한 특성 때문으로 해석됨.
 
 1.  **Texture vs Sequence:** 장르(Genre)는 시간의 흐름(서사)보다는 **순간적인 음색이나 질감(Texture)**에 의해 결정되는 경향이 큼. (예: 일렉기타의 디스토션 소리만 들려도 Rock임을 알 수 있음)
 2.  **Spatial Feature:** CNN은 MFCC를 '이미지'로 인식하여 주파수와 시간 축의 **지역적 패턴(Local Feature)**을 잘 포착하는 반면, RNN은 **순차적 관계**에 집중하기 때문에 전체적인 '음색적 분위기'를 파악하는 데에는 상대적으로 불리함.
+
+#### **🕵️‍♂️ 실패 사례 분석 (Failure Case Study)**
+실제 테스트 과정에서 모델이 **Reggae(8)** 장르를 **Hip-hop(4)**으로 오인하는 사례가 관측됨.
+
+* **Expected:** Reggae (Index 8)
+* **Predicted:** Hip-hop (Index 4)
+* **Analysis:**
+    * **원인:** RNN 계열 모델은 시간적 흐름(Sequence)과 리듬의 반복성에 집중하는 경향이 있음.
+    * **유사성:** 힙합과 레게는 모두 강한 드럼 비트와 반복적인 루프(Loop) 구조를 공유함.
+    * **한계:** 모델이 레게 특유의 기타 주법(Skank)과 같은 미세한 '음색적 특징(Timbre)'보다는, 힙합과 유사한 '리듬적 구조(Rhythm)'에 더 큰 가중치를 두어 발생한 오분류(Misclassification)로 판단됨.
 
 #### **🚀 결론 및 향후 발전 방향 (Conclusion)**
 * **장르 분류(Classification)**와 같은 정적(Static)인 태스크에는 **CNN**이 더 적합함.
