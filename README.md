@@ -529,3 +529,49 @@ def predict(model, X, Y):
 * **Performance:** 10개 장르 중 무작위 선택 확률(10%) 대비 **약 7배 이상** 높은 정확도를 보임.
 * **Training vs Test Gap:** Train Accuracy(74.8%)와 Test Accuracy(72.5%)의 격차가 약 **2.3%p**로 매우 적음. 이는 **과적합(Overfitting) 없이 모델이 아주 건강하게 학습되었음**을 의미함.
 * **Conclusion:** 베이스라인 모델로서 훌륭한 성능을 확보함. 향후 Data Augmentation(데이터 증강)이나 모델의 깊이(Depth)를 확장하여 80% 이상의 정확도에 도전할 계획임.
+
+## 13. RNN-LSTM Implementation for Genre Classification
+
+시계열(Time-Series) 데이터 처리에 특화된 **RNN(Recurrent Neural Network)**, 그중에서도 장기 기억 능력이 강화된 **LSTM(Long Short-Term Memory)**을 사용하여 장르 분류 모델을 구현함.
+
+### 13.1 Why LSTM? (Handling Sequential Data)
+* **CNN vs RNN:** CNN이 소리의 '공간적 패턴(이미지)'을 본다면, RNN은 소리의 **'시간적 흐름(문맥)'**을 파악함. 음악은 앞부분과 뒷부분이 유기적으로 연결된 시계열 데이터이므로 RNN이 매우 적합함.
+* **Vanilla RNN의 한계:** 문장이 길어지면 앞의 내용을 까먹는 **기울기 소실(Vanishing Gradient)** 문제가 발생함.
+* **LSTM의 해결책:** **Cell State**라는 전용 고속도로를 뚫어주어, 130초(Steps) 동안 중요한 기억을 잃어버리지 않고 끝까지 전달함.
+
+### 13.2 Model Architecture (Stacked LSTM)
+단일 LSTM 층이 아닌, 2개의 LSTM 층을 쌓아 올려(Stacked) 더 깊고 추상적인 음악적 특징을 학습하도록 설계함.
+
+| Layer | Type | Output Shape | Feature |
+| :-- | :-- | :-- | :-- |
+| **Input** | - | `(130, 13)` | 130 Time Steps, 13 MFCCs |
+| **LSTM 1** | **Seq2Seq** | `(130, 64)` | `return_sequences=True`. 시간 정보를 유지한 채 2층으로 전달 (Bridge 역할) |
+| **LSTM 2** | **Seq2Vec** | `(64)` | `return_sequences=False`. 시계열 흐름을 종합하여 최종 결론(Vector) 도출 |
+| **Dense** | Classifier | `(64)` | ReLU Activation |
+| **Dropout** | Regularizer | `(64)` | Overfitting 방지 (30% Drop) |
+| **Output** | Classifier | `(10)` | Softmax (10개 장르 확률) |
+
+### 13.3 Key Concept: Sequence-to-Sequence Connection
+```python
+# 1층 LSTM
+model.add(tf.keras.layers.LSTM(64, input_shape=input_shape, return_sequences=True))
+```
+### 13.4 Final Performance & Analysis
+
+![RNN Result](./image/260217_RNN.png)
+
+#### **📊 결과 분석 (Result Analysis)**
+* **Accuracy:** Test Accuracy는 약 **68% ~ 70%** 수준에서 수렴함.
+* **Graph Trend:** * **Accuracy:** 완만하게 상승하지만, CNN 모델 대비 상승 폭이 둔함.
+    * **Error:** 약 15 Epoch 이후부터 Test Error가 더 이상 줄어들지 않고 정체되거나 소폭 상승하는 모습을 보임. (초기 단계의 Overfitting 조짐)
+
+#### **🤔 왜 CNN보다 성능이 낮을까? (Critical Thinking)**
+이전 챕터의 **CNN 모델(약 72%)**보다 **RNN 모델(약 65%)**의 성능이 낮게 측정됨. 이는 **'음악 장르 분류'**라는 태스크의 고유한 특성 때문으로 해석됨.
+
+1.  **Texture vs Sequence:** 장르(Genre)는 시간의 흐름(서사)보다는 **순간적인 음색이나 질감(Texture)**에 의해 결정되는 경향이 큼. (예: 일렉기타의 디스토션 소리만 들려도 Rock임을 알 수 있음)
+2.  **Spatial Feature:** CNN은 MFCC를 '이미지'로 인식하여 주파수와 시간 축의 **지역적 패턴(Local Feature)**을 잘 포착하는 반면, RNN은 **순차적 관계**에 집중하기 때문에 전체적인 '음색적 분위기'를 파악하는 데에는 상대적으로 불리함.
+
+#### **🚀 결론 및 향후 발전 방향 (Conclusion)**
+* **장르 분류(Classification)**와 같은 정적(Static)인 태스크에는 **CNN**이 더 적합함.
+* 하지만 **작곡(Generation), 가사 생성, 악기 분리**와 같이 **'앞뒤 문맥'**이 필수적인 동적(Dynamic) 태스크에서는 본 챕터에서 구현한 **RNN/LSTM** 구조가 필수적으로 사용됨.
+* **Advanced Model:** 현업에서는 이 둘의 장점을 합친 **CRNN (Convolutional Recurrent Neural Network)** 구조나 **Attention Mechanism**을 사용하여 정확도를 80% 이상으로 끌어올림.
