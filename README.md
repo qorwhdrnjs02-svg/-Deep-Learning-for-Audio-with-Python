@@ -10,12 +10,21 @@
   4. Comparative Analysis (Critical Thinking): 장르 분류 태스크에서 **CNN(72.5%)**이 **RNN/LSTM(62%)**보다 우수한 성능을 보임을 확인. 이를 통해 장르 분류에는 '시간적 흐름(Sequence)'보다 '음색적 질감(Texture)'이 더 중요한 특징량임을 데이터 기반으로 분석함.
 
 - Tech Stack
-  1. Frameworks: TensorFlow, Keras, PyTorch (Base: NumPy)
-  2. Audio Libs: Librosa, SciPy (Digital Signal Processing)
-  3. Concepts: Backpropagation, STFT/MFCC, CNN, Stacked LSTM, Overfitting Control
+  1. Dataset: GTZAN Dataset - Music Genre Classification(https://www.kaggle.com/datasets/andradaolteanu/gtzan-dataset-music-genre-classification)
+  2. Frameworks: TensorFlow, Keras, PyTorch (Base: NumPy)
+  3. Audio Libs: Librosa, SciPy (Digital Signal Processing)
+  4. Concepts: Backpropagation, STFT/MFCC, CNN, Stacked LSTM, Overfitting Control
+  
+## 📊 Model Performance Comparison
+본 프로젝트는 동일한 MFCC 피처셋을 바탕으로 세 가지 아키텍처의 성능을 비교 분석했습니다.
 
-## Final Result Table
-
+| Model | Test Accuracy | Architecture | Key Finding |
+| :--- | :---: | :--- | :--- |
+| **MLP** | 59% | Dense Layers | 데이터 Flatten 과정에서 시공간 정보 손실 |
+| **CNN** | **72.5%** | **Conv2D + BN** | **음색(Timbre)의 지역적 패턴 추출에 최적** |
+| **LSTM** | 62% | Stacked LSTM | 리듬적 구조 학습에는 유리하나 음색 혼동 발생 |
+<details>
+  <summary>
 - ## 01. Artificial Neuron Implementation
 - **목표l:** 신경학습망의 기초 구성 이해.
 - **Process:**
@@ -188,7 +197,7 @@ $$
 - **Dataset:** `random()/2`를 사용해 합이 1을 넘지 않는 5,000개의 데이터 생성.
 - **Training:** 100 에포크 동안 총 350,000번의 학습 수행.
 - **Result:** 한 번도 보지 못한 `[[0.1, 0.2], [0.2, 0.2]]`와 같은 데이터를 주었을 때 정답에 근사한 값을 출력함.
-
+</summary>
 ## 08. Audio Data Preprocessing (STFT & MFCC)
 - **Goal:** 시계열 데이터인 오디오를 AI 모델이 학습 가능한 '이미지' 형태의 특징량(Feature)으로 변환.
 - **Process:**
@@ -602,3 +611,4 @@ model.add(tf.keras.layers.LSTM(64, input_shape=input_shape, return_sequences=Tru
 * **장르 분류(Classification)**와 같은 정적(Static)인 태스크에는 **CNN**이 더 적합함.
 * 하지만 **작곡(Generation), 가사 생성, 악기 분리**와 같이 **'앞뒤 문맥'**이 필수적인 동적(Dynamic) 태스크에서는 본 챕터에서 구현한 **RNN/LSTM** 구조가 필수적으로 사용됨.
 * **Advanced Model:** 현업에서는 이 둘의 장점을 합친 **CRNN (Convolutional Recurrent Neural Network)** 구조나 **Attention Mechanism**을 사용하여 정확도를 80% 이상으로 끌어올림.
+</details>
