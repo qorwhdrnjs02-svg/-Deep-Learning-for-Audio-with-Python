@@ -25,7 +25,6 @@
 | **LSTM** | 62% | Stacked LSTM | 리듬적 구조 학습에는 유리하나 음색 혼동 발생 |
 
 <details>
-  <summary>
     
 - ## 01. Artificial Neuron Implementation
 - **목표l:** 신경학습망의 기초 구성 이해.
