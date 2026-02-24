@@ -23,8 +23,10 @@
 | **MLP** | 59% | Dense Layers | 데이터 Flatten 과정에서 시공간 정보 손실 |
 | **CNN** | **72.5%** | **Conv2D + BN** | **음색(Timbre)의 지역적 패턴 추출에 최적** |
 | **LSTM** | 62% | Stacked LSTM | 리듬적 구조 학습에는 유리하나 음색 혼동 발생 |
+
 <details>
   <summary>
+    
 - ## 01. Artificial Neuron Implementation
 - **목표l:** 신경학습망의 기초 구성 이해.
 - **Process:**
