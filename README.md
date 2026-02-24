@@ -1,6 +1,22 @@
 # -Deep-Learning-for-Audio-with-Python
 
-## 01. Artificial Neuron Implementation
+## Project Summary: Audio Deep Learning Pipeline & Analysis
+- Goal:본 프로젝트는 딥러닝 모델의 학습 메커니즘과 오디오 신호처리(Signal Processing)의 핵심 원리를 통합적으로 이해하는 것을 목표로 합니다. 프레임워크의 추상화된 기능에 의존하기에 앞서, NumPy만을 활용하여 순전파와 역전파 알고리즘을 직접 구현함으로써 신경망의 수학적 기초를 다졌습니다. 이를 바탕으로 시간-주파수 도메인 변환 등 오디오 신호의 특성을 보존하는 전처리 파이프라인을 구축하고, 신호의 고유한 특징이 MLP, CNN, RNN 각 아키텍처에서 어떻게 추출되고 학습되는지 심층적으로 분석하였습니다.
+
+- Key Achivements
+  1. Fundemetal Implementation: Library(TensorFlow 등)에 의존하지 않고 NumPy만을 활용하여 Multi-layer Perceptron 및 Backpropagation 알고리즘을 밑바닥부터 구현하여 학습 메커니즘을 완벽히 이해함.
+  2. Audio Feature Engineering: 물리적 음향 신호(Raw Waveform)를 인간의 청각 특성이 반영된 **STFT 및 MFCC(13개 계수)**로 변환하는 전처리 파이프라인 구축. JSON 기반 데이터 구조 설계를 통해 대용량 음원 데이터의 로딩 효율성 극대화.
+  3. Model Optimization: 과적합(Overfitting) 문제를 해결하기 위해 L2 Regularization, Dropout, Batch Normalization 기법을 적용하여 모델의 일반화(Generalization) 성능 확보.
+  4. Comparative Analysis (Critical Thinking): 장르 분류 태스크에서 **CNN(72.5%)**이 **RNN/LSTM(62%)**보다 우수한 성능을 보임을 확인. 이를 통해 장르 분류에는 '시간적 흐름(Sequence)'보다 '음색적 질감(Texture)'이 더 중요한 특징량임을 데이터 기반으로 분석함.
+
+- Tech Stack
+  1. Frameworks: TensorFlow, Keras, PyTorch (Base: NumPy)
+  2. Audio Libs: Librosa, SciPy (Digital Signal Processing)
+  3. Concepts: Backpropagation, STFT/MFCC, CNN, Stacked LSTM, Overfitting Control
+
+## Final Result Table
+
+- ## 01. Artificial Neuron Implementation
 - **목표l:** 신경학습망의 기초 구성 이해.
 - **Process:**
   1. Receive multiple inputs.
