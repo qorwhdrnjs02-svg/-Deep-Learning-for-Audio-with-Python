@@ -5,9 +5,9 @@
 
 - Key Achivements
   1. Fundemetal Implementation: Library(TensorFlow 등)에 의존하지 않고 NumPy만을 활용하여 Multi-layer Perceptron 및 Backpropagation 알고리즘을 밑바닥부터 구현하여 학습 메커니즘을 완벽히 이해함.
-  2. Audio Feature Engineering: 물리적 음향 신호(Raw Waveform)를 인간의 청각 특성이 반영된 **STFT 및 MFCC(13개 계수)**로 변환하는 전처리 파이프라인 구축. JSON 기반 데이터 구조 설계를 통해 대용량 음원 데이터의 로딩 효율성 극대화.
+  2. Audio Feature Engineering: 물리적 음향 신호(Raw Waveform)를 인간의 청각 특성이 반영된 STFT 및 MFCC(13개 계수)로 변환하는 전처리 파이프라인 구축. JSON 기반 데이터 구조 설계를 통해 대용량 음원 데이터의 로딩 효율성 극대화.
   3. Model Optimization: 과적합(Overfitting) 문제를 해결하기 위해 L2 Regularization, Dropout, Batch Normalization 기법을 적용하여 모델의 일반화(Generalization) 성능 확보.
-  4. Comparative Analysis (Critical Thinking): 장르 분류 태스크에서 **CNN(72.5%)**이 **RNN/LSTM(62%)**보다 우수한 성능을 보임을 확인. 이를 통해 장르 분류에는 '시간적 흐름(Sequence)'보다 '음색적 질감(Texture)'이 더 중요한 특징량임을 데이터 기반으로 분석함.
+  4. Comparative Analysis (Critical Thinking): 장르 분류 태스크에서 CNN(72.5%)이 RNN/LSTM(62%)보다 우수한 성능을 보임을 확인. 이를 통해 장르 분류에는 '시간적 흐름(Sequence)'보다 '음색적 질감(Texture)'이 더 중요한 특징량임을 데이터 기반으로 분석함.
 
 - Tech Stack
   1. Dataset: GTZAN Dataset - Music Genre Classification(https://www.kaggle.com/datasets/andradaolteanu/gtzan-dataset-music-genre-classification)
