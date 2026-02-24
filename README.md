@@ -14,7 +14,7 @@
   2. Frameworks: TensorFlow, Keras, PyTorch (Base: NumPy)
   3. Audio Libs: Librosa, SciPy (Digital Signal Processing)
   4. Concepts: Backpropagation, STFT/MFCC, CNN, Stacked LSTM, Overfitting Control
-  5. 코드 내에 물리학적 신호처리 관점에서의 구현 근거와 파라미터 선정 이유를 상세히 주석으로 기록하였습니다
+  5. 코드 내에 신호처리 관점에서의 구현 근거와 파라미터 선정 이유를 상세히 주석으로 기록하였습니다
   
 ## 📊 Model Performance Comparison
 본 프로젝트는 동일한 MFCC 피처셋을 바탕으로 세 가지 아키텍처의 성능을 비교 분석했습니다.
